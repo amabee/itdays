@@ -1,11 +1,53 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "fastbootstrap/dist/css/fastbootstrap.min.css";
+import { addTribu, getHandler } from "../funcs";
+import { ErrorMessage, SuccessMessage } from "@/globals/swal";
 
 const TribuListPage = ({ isDarkMode }) => {
+  const [handlers, setHandlers] = useState([]);
+  const [tribuName, setTribuName] = useState("");
+  const [assignedHandler, setAssignedHandler] = useState("");
+  const [assignedHandlerName, setAssignedHandlerName] = useState("");
+
+  useEffect(() => {
+    const fetchHandlers = async () => {
+      try {
+        const { success, message, data } = await getHandler();
+        if (!success) {
+          return ErrorMessage(message);
+        }
+
+        setHandlers(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Failed to fetch handlers:", error);
+      }
+    };
+
+    fetchHandlers();
+  }, []);
+
+  const handleTribuAdder = async (e) => {
+    e.preventDefault();
+    if (!tribuName.length > 0 || !assignedHandler.length > 0) {
+      ErrorMessage("Tribu name is required");
+      return;
+    }
+
+    const { success, message } = await addTribu(tribuName, assignedHandler);
+
+    if (!success) {
+      ErrorMessage(message);
+      return;
+    }
+
+    SuccessMessage(message);
+  };
+
   return (
     <main
       style={isDarkMode ? { background: "#060714" } : { background: "white" }}
@@ -113,6 +155,92 @@ const TribuListPage = ({ isDarkMode }) => {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* MODAL FOR ADDING TRIBU */}
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                ADD Tribu
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="input-group mb-3">
+                <span className="input-group-text">Tribu Name</span>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter Tribu Name"
+                  aria-label="Tribu Name"
+                  value={tribuName}
+                  onChange={(e) => setTribuName(e.target.value)}
+                  required={true}
+                />
+              </div>
+              <div className="input-group mb-3">
+                <span className="input-group-text">Assigned Handler</span>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-default dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {assignedHandlerName
+                      ? assignedHandlerName
+                      : " Page actions"}
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    {handlers.map((handler) => (
+                      <li
+                        key={handler.pid}
+                        onClick={() => {
+                          setAssignedHandler(handler.handler_id);
+                          setAssignedHandlerName(
+                            handler.h_fname + " " + handler.h_lname
+                          );
+                        }}
+                      >
+                        <a class="dropdown-item" href="#">
+                          {handler.h_fname} {handler.h_lname}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={(e) => handleTribuAdder(e)}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>

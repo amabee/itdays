@@ -44,6 +44,7 @@ export async function login(username, password) {
           lastname: res.data.success.h_lname,
           email: res.data.success.h_email,
           user_id: res.data.success.handler_id,
+          pid: res.data.success.pid,
         };
 
         const expiration = new Date(Date.now() + 5000 * 60 * 1000);

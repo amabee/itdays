@@ -7,6 +7,7 @@ import Dashboard from "./components/dashboard";
 import "./assets/style.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import ManageTribu from "./components/manage_tribu";
 
 const Home = () => {
   const [isSessionAvailable, setIsSessionAvailable] = useState(false);
@@ -57,6 +58,10 @@ const Home = () => {
         setContent(<Dashboard isDarkMode={isDarkMode} />);
         break;
 
+      case "mtribu":
+        setContent(<ManageTribu isDarkMode={isDarkMode} />);
+        break;
+
       default:
         setContent(<Dashboard isDarkMode={isDarkMode} />);
         break;
@@ -80,6 +85,7 @@ const Home = () => {
       {isSessionAvailable ? (
         <div>
           <section id="sidebar" ref={sidebarRef}>
+            
             <a href="#" className="brand">
               <i className="bx bxs-smile"></i>
               <span className="text">HandlerHub</span>

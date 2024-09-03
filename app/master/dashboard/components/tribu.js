@@ -125,14 +125,6 @@ const TribuListPage = ({ isDarkMode }) => {
           <i class="bi bi-person-plus-fill"></i> Add Tribu
         </button>
         <div class="dropdown">
-          {/* <button
-            class="btn btn-discovery dropdown-toggle "
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Sort by:
-          </button> */}
           <ul class="dropdown-menu" role="menu">
             <li>
               <a class="dropdown-item" href="#">
@@ -162,38 +154,6 @@ const TribuListPage = ({ isDarkMode }) => {
             <i className="bx bx-search"></i>
             <i className="bx bx-filter"></i>
           </div>
-          {/* <table
-            class={
-              isDarkMode
-                ? "table-dark table-hover table-borderless"
-                : "table table-hover table-borderless"
-            }
-          >
-            <thead>
-              <tr>
-                <th>Tribu Name</th>
-                <th>Member Count</th>
-                <th>Attendance Count</th>
-                <th># of Absent Member</th>
-              </tr>
-            </thead>
-            <tbody class="table-group-divider">
-              <tr>
-                <td>
-                  <span class="avatar">
-                    <i class="bi bi-person"></i>
-                  </span>
-                  <p>Magic</p>
-                </td>
-                <td>Magic</td>
-                <td>01-10-2021</td>
-               <td>
-                  <span className="status completed">Early Arrival</span>
-                </td> 
-                <td>0</td>
-              </tr>
-            </tbody>
-          </table> */}
           <DataTable
             columns={columns}
             data={tribus}

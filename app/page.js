@@ -8,6 +8,7 @@ import "../public/vendor/bootstrap/css/bootstrap.min.css";
 import "../public/vendor/css-hamburgers/hamburgers.min.css";
 import "../public/vendor/select2/select2.min.css";
 import { getSession, login } from "@/lib";
+import { ErrorMessage } from "@/globals/swal";
 
 const Auth = () => {
   const [email, setEmail] = useState("");

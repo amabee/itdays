@@ -141,27 +141,30 @@ const HandlersListPage = ({ isDarkMode }) => {
     },
     {
       name: "Action",
-      cell: (row) => (
+      cell: (handler) => (
         <div className="mb-3">
+          <label htmlFor="tribuSelect" className="form-label">
+            Assigned Tribu
+          </label>
           <select
             id="tribuSelect"
             className="form-select"
             aria-label="Tribu"
             onChange={(e) => {
               setTribu(e.target.value);
-              handleAssigningTeacher2Tribu(row.handler_id, e.target.value);
+              handleAssigningTeacher2Tribu(handler.handler_id, e.target.value);
             }}
-            defaultValue={row.tribu_name || ""}
           >
-            <option value="" disabled>
-              {row.tribu_name || "Select Tribu"}
+            <option value="" disabled selected>
+              {handler.tribu_name ? handler.tribu_name : "Select Tribu"}
             </option>
+
             {tribus.map((tribu) => (
               <option key={tribu.pid} value={tribu.pid}>
                 {tribu.tribu_name}
               </option>
             ))}
-          </select> 
+          </select>
         </div>
       ),
     },
@@ -237,14 +240,14 @@ const HandlersListPage = ({ isDarkMode }) => {
           <i class="bi bi-person-plus-fill"></i> Add Handler
         </button>
         <div class="dropdown">
-          <button
+          {/* <button
             class="btn btn-discovery dropdown-toggle "
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             Sort by:
-          </button>
+          </button> */}
           <ul class="dropdown-menu" role="menu">
             <li>
               <a class="dropdown-item" href="#">

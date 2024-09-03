@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../public/css/main.css";
 import "../public/css/util.css";
 import "../public/fonts/font-awesome-4.7.0/css/font-awesome.min.css";
@@ -7,35 +7,36 @@ import "../public/vendor/animate/animate.css";
 import "../public/vendor/bootstrap/css/bootstrap.min.css";
 import "../public/vendor/css-hamburgers/hamburgers.min.css";
 import "../public/vendor/select2/select2.min.css";
+import { getSession, login } from "@/lib";
 
 const Auth = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  useEffect(() => {
+    const checkSession = async () => {
+      const session = await getSession();
+      if (session) {
+        window.location.href = "/handler";
+      }
+    };
+    checkSession();
+  }, []);
 
   const validate = () => {
     let valid = true;
     let errors = {};
 
     if (
-      !formData.email ||
-      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+      !email ||
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
       errors.email = "Please enter a valid email address.";
       valid = false;
     }
 
-    if (!formData.password) {
+    if (!password) {
       errors.password = "Password is required.";
       valid = false;
     }
@@ -44,10 +45,17 @@ const Auth = () => {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form data:", formData);
+      const { success, message } = await login(email, password);
+
+      if (!success) {
+        ErrorMessage(message);
+        return;
+      }
+
+      window.location.href = "/handler";
     }
   };
 
@@ -59,7 +67,7 @@ const Auth = () => {
             <img src="/images/img-01.png" alt="IMG" />
           </div>
 
-          <form className="login100-form validate-form" onSubmit={handleSubmit}>
+          <form className="login100-form validate-form">
             <span className="login100-form-title">Handler Login</span>
 
             <div
@@ -71,8 +79,8 @@ const Auth = () => {
                 type="text"
                 name="email"
                 placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <span className="focus-input100"></span>
               <span className="symbol-input100">
@@ -92,8 +100,8 @@ const Auth = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <span className="focus-input100"></span>
               <span className="symbol-input100">
@@ -105,7 +113,11 @@ const Auth = () => {
             </div>
 
             <div className="container-login100-form-btn">
-              <button type="submit" className="login100-form-btn">
+              <button
+                type="button"
+                className="login100-form-btn"
+                onClick={(e) => handleSubmit(e)}
+              >
                 Login
               </button>
             </div>
@@ -117,12 +129,7 @@ const Auth = () => {
               </a>
             </div>
 
-            <div className="text-center p-t-136">
-              {/* <a className="txt2" href="#">
-                Create your Account
-                <i className="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-              </a> */}
-            </div>
+            <div className="text-center p-t-136"></div>
           </form>
         </div>
       </div>

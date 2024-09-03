@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { getSession } from "../lib";
+import { getSession, logout } from "../lib";
 import { useRouter } from "next/navigation";
 import "./assets/style.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -139,7 +139,18 @@ const MasterDashboard = () => {
     }
   };
 
+  //HANDLE LOGOUT
+  const handleLogOut = async () => {
+    try {
+      const { redirect } = await logout();
   
+      if (redirect) {
+        window.location.href = redirect.destination;
+      }
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
 
   return (
     <div>
@@ -189,10 +200,7 @@ const MasterDashboard = () => {
               </li>
             </ul>
             <ul className="side-menu">
-              <li
-                className={activeMenuItem === "logout" ? "active" : ""}
-                onClick={() => handleMenuItemClick("logout")}
-              >
+              <li onClick={() => handleLogOut()}>
                 <a href="#" className="logout">
                   <i className="bx bxs-log-out-circle"></i>
                   <span className="text">Logout</span>
@@ -219,13 +227,13 @@ const MasterDashboard = () => {
                 checked={isDarkMode}
               />
               <label htmlFor="switch-mode" className="switch-mode"></label>
-              <a href="#" className="notification">
+              {/* <a href="#" className="notification">
                 <i className="bi bi-bell-fill"></i>
                 <span className="num">8</span>
               </a>
               <a href="#" className="profile">
                 <img src="img/people.png" alt="Profile" />
-              </a>
+              </a> */}
             </nav>
 
             {content}

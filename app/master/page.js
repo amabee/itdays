@@ -55,8 +55,6 @@ const MasterAuth = () => {
       const session = await getSession();
       if (session) {
         window.location.href = "/master/dashboard";
-      } else {
-        setIsSessionAvailable(true);
       }
     };
     checkSession();

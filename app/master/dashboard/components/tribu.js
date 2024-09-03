@@ -125,14 +125,14 @@ const TribuListPage = ({ isDarkMode }) => {
           <i class="bi bi-person-plus-fill"></i> Add Tribu
         </button>
         <div class="dropdown">
-          <button
+          {/* <button
             class="btn btn-discovery dropdown-toggle "
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             Sort by:
-          </button>
+          </button> */}
           <ul class="dropdown-menu" role="menu">
             <li>
               <a class="dropdown-item" href="#">

@@ -104,3 +104,13 @@ export async function updateSession(request) {
   return res;
 }
 
+export async function logout() {
+  cookies().set("session", "", { maxAge: -1, path: "/" });
+
+  return {
+    redirect: {
+      destination: "/master",
+      permanent: false,
+    },
+  };
+}

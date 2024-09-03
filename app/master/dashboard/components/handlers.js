@@ -4,8 +4,14 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "fastbootstrap/dist/css/fastbootstrap.min.css";
-import { addHandler, getHandler, getTribus } from "../funcs";
+import {
+  addHandler,
+  assignedTeacher2Tribu,
+  getHandler,
+  getTribus,
+} from "../funcs";
 import { ErrorMessage, SuccessMessage } from "@/globals/swal";
+import DataTable from "react-data-table-component";
 
 const HandlersListPage = ({ isDarkMode }) => {
   const [fname, setFname] = useState("");
@@ -93,6 +99,73 @@ const HandlersListPage = ({ isDarkMode }) => {
       setPwd("");
     }
   };
+
+  const handleAssigningTeacher2Tribu = async (hid, pid) => {
+    const { success, message } = await assignedTeacher2Tribu(hid, pid);
+
+    if (!success) {
+      ErrorMessage(message);
+      return;
+    }
+
+    console.log("Clicked?");
+
+    SuccessMessage(message);
+  };
+
+  const columns = [
+    {
+      name: "Handler ID",
+      selector: (row) => row.handler_id,
+      sortable: true,
+    },
+    {
+      name: "Handler Name",
+      selector: (row) => `${row.h_fname} ${row.h_lname}`,
+      sortable: true,
+    },
+    {
+      name: "Tribu",
+      selector: (row) => row.tribu_name || "Not yet assigned",
+      sortable: true,
+    },
+    {
+      name: "Created At",
+      selector: (row) => new Date(row.created_at).toLocaleDateString(),
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="mb-3">
+          <select
+            id="tribuSelect"
+            className="form-select"
+            aria-label="Tribu"
+            onChange={(e) => {
+              setTribu(e.target.value);
+              handleAssigningTeacher2Tribu(row.handler_id, e.target.value);
+            }}
+            defaultValue={row.tribu_name || ""}
+          >
+            <option value="" disabled>
+              {row.tribu_name || "Select Tribu"}
+            </option>
+            {tribus.map((tribu) => (
+              <option key={tribu.pid} value={tribu.pid}>
+                {tribu.tribu_name}
+              </option>
+            ))}
+          </select> 
+        </div>
+      ),
+    },
+  ];
 
   useEffect(() => {
     const fetchHandlers = async () => {
@@ -201,7 +274,7 @@ const HandlersListPage = ({ isDarkMode }) => {
             <i className="bx bx-search"></i>
             <i className="bx bx-filter"></i>
           </div>
-          <table
+          {/* <table
             class={
               isDarkMode
                 ? "table-dark table-hover table-borderless"
@@ -250,7 +323,13 @@ const HandlersListPage = ({ isDarkMode }) => {
                           id="tribuSelect"
                           className="form-select"
                           aria-label="Tribu"
-                          onChange={(e) => setTribu(e.target.value)}
+                          onChange={(e) => {
+                            setTribu(e.target.value);
+                            handleAssigningTeacher2Tribu(
+                              handler.handler_id,
+                              e.target.value
+                            );
+                          }}
                         >
                           <option value="" disabled selected>
                             {handler.tribu_name
@@ -269,7 +348,17 @@ const HandlersListPage = ({ isDarkMode }) => {
                   </tr>
                 ))}
             </tbody>
-          </table>
+          </table> */}
+          <DataTable
+            columns={columns}
+            data={handlers}
+            pagination
+            highlightOnHover
+            striped
+            theme={isDarkMode ? "dark" : "light"}
+            responsive
+            dense
+          />
         </div>
       </div>
       {/* MODAL FOR ADDING HANDLERS */}

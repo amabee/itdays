@@ -92,6 +92,33 @@ export const getTribus = async () => {
   }
 };
 
+export const getTribuDetails = async () => {
+  try {
+    const res = await axios.get(MASTER_MAIN, {
+      params: {
+        operation: "getTribuDetails",
+        json: "",
+      },
+    });
+
+    if (res.status === 200) {
+      if (res.data.success) {
+        return { success: true, message: "", data: res.data.success };
+      } else {
+        return {
+          success: false,
+          message: "Something went wrong while fetching the tribu details",
+          data: null,
+        };
+      }
+    } else {
+      return { success: false, message: res.statusText, data: null };
+    }
+  } catch (error) {
+    return { success: false, message: error, data: null };
+  }
+};
+
 export const addTribu = async (tribu_name, handler_id) => {
   const formData = new FormData();
   formData.append("operation", "addTribu");
@@ -125,5 +152,41 @@ export const addTribu = async (tribu_name, handler_id) => {
     }
   } catch (error) {
     return { success: false, message: error, data: null };
+  }
+};
+
+export const assignedTeacher2Tribu = async (hid, pid) => {
+  const formData = new FormData();
+  formData.append("operation", "assignTeacher2Tribu");
+  formData.append(
+    "json",
+    JSON.stringify({
+      hid: hid,
+      pid: pid,
+    })
+  );
+
+  try {
+    const res = await axios({
+      url: MASTER_MAIN,
+      method: "POST",
+      data: formData,
+    });
+
+    if (res.status === 200) {
+      if (res.data.success) {
+        return { success: true, message: JSON.stringify(res.data.success) };
+      } else {
+        return {
+          success: false,
+          // message: "Something went wrong assigning the teacher to the tribu",
+          message: JSON.stringify(res.data),
+        };
+      }
+    } else {
+      return { success: false, message: "Status Error" };
+    }
+  } catch (error) {
+    return { success: false, message: "Exception error: " + error };
   }
 };

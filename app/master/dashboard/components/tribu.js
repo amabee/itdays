@@ -4,14 +4,16 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "fastbootstrap/dist/css/fastbootstrap.min.css";
-import { addTribu, getHandler } from "../funcs";
+import { addTribu, getHandler, getTribuDetails, getTribus } from "../funcs";
 import { ErrorMessage, SuccessMessage } from "@/globals/swal";
+import DataTable from "react-data-table-component";
 
 const TribuListPage = ({ isDarkMode }) => {
   const [handlers, setHandlers] = useState([]);
   const [tribuName, setTribuName] = useState("");
   const [assignedHandler, setAssignedHandler] = useState("");
   const [assignedHandlerName, setAssignedHandlerName] = useState("");
+  const [tribus, setTribus] = useState();
 
   useEffect(() => {
     const fetchHandlers = async () => {
@@ -28,6 +30,21 @@ const TribuListPage = ({ isDarkMode }) => {
       }
     };
 
+    const fetchTribuList = async () => {
+      try {
+        const { success, message, data } = await getTribuDetails();
+        if (!success) {
+          return ErrorMessage(message);
+        }
+
+        setTribus(data);
+        console.log(data);
+      } catch (error) {
+        return ErrorMessage(error);
+      }
+    };
+
+    fetchTribuList();
     fetchHandlers();
   }, []);
 
@@ -47,6 +64,28 @@ const TribuListPage = ({ isDarkMode }) => {
 
     SuccessMessage(message);
   };
+  const columns = [
+    {
+      name: "Tribu Name",
+      selector: (row) => row.tribu_name,
+      sortable: true,
+    },
+    {
+      name: "Member Count",
+      selector: (row) => row.member_count,
+      sortable: true,
+    },
+    {
+      name: "Attendance Count",
+      selector: (row) => row.attendance_count || 0,
+      sortable: true,
+    },
+    {
+      name: "# of Absent Member",
+      selector: (row) => row.absent_count || 0,
+      sortable: true,
+    },
+  ];
 
   return (
     <main
@@ -123,7 +162,7 @@ const TribuListPage = ({ isDarkMode }) => {
             <i className="bx bx-search"></i>
             <i className="bx bx-filter"></i>
           </div>
-          <table
+          {/* <table
             class={
               isDarkMode
                 ? "table-dark table-hover table-borderless"
@@ -148,13 +187,23 @@ const TribuListPage = ({ isDarkMode }) => {
                 </td>
                 <td>Magic</td>
                 <td>01-10-2021</td>
-                {/* <td>
+               <td>
                   <span className="status completed">Early Arrival</span>
-                </td> */}
+                </td> 
                 <td>0</td>
               </tr>
             </tbody>
-          </table>
+          </table> */}
+          <DataTable
+            columns={columns}
+            data={tribus}
+            pagination
+            highlightOnHover
+            striped
+            theme={isDarkMode ? "dark" : "light"}
+            responsive
+            dense
+          />
         </div>
       </div>
       {/* MODAL FOR ADDING TRIBU */}
